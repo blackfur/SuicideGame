@@ -21,4 +21,5 @@ void order_insert(link add);
 void enqueue(link);
 link dequeue(void);
 void reverse(void);
+link next(link p);
 #endif

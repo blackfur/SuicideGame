@@ -117,3 +117,7 @@ void reverse(void){
     }
     head=pre;
 }
+
+link next(link p){
+    return (p==NULL||p->next==tail)?head->next:p->next;
+}
