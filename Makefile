@@ -38,6 +38,7 @@ run:
 t_file=$(wildcard ./test/*.h)
 t_src=$(patsubst ./test/%.h, ./test/build/%.cpp, $(t_file))
 t_exe=$(patsubst ./test/%.h, ./test/build/%.exe, $(t_file))
+t_win_exe=$(patsubst ./test/%.h, %.exe, $(t_file))
 t_build=./test/build
 
 cxxtestgen=.\test\cxxtest-4.3\bin\cxxtestgen
@@ -54,12 +55,27 @@ $(t_build)/%.cpp: ./test/%.h $(t_build)
 $(t_build)/%.exe: $(t_build)/%.cpp
 	$(CPP) -o $@ -I$(cxxincl) $<
 
-# build test file
+# build all test file
 buildt: $(t_exe)
 
 test: ./test/build/$(argv).exe
-	.\test\build\$(argv).exe
+	.\test\build\$(argv).exe -v
 
 # %~fI expands %I to a fully qualified path name
-testall: $(t_exe)
-	for /r ".\test\build" %%i in (*.exe) do %%~fi
+#for /r ".\test\build" %%i in (*.exe) do %%~fi -v
+testbunch: $(t_exe)
+	for /r ".\test\build" %%i in ($(t_win_exe)) do %%~fi -v
+
+TEST_ALL=./test/build/TestAll
+$(TEST_ALL).cpp: $(t_file) $(t_build)
+	$(cxxtestgen) --error-printer -o $@ $(t_file)
+$(TEST_ALL).exe: $(TEST_ALL).cpp
+	$(CPP) -o $@ -I$(cxxincl) $<
+
+# -h --help --help-tests
+# -v Enable tracing output
+# *.exe <suiteName> <testName>
+# *.exe <suiteName>
+testall: $(TEST_ALL).exe
+	$< $(argv)
+

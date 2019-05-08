@@ -9,5 +9,6 @@ g++ -o runtest.exe -I$CXXTEST runtest.cpp
 ./runtest.exe
 
 xcopy /e test\cxxtest-4.3\cxxtest g:\MinGW\include\cxxtest
-make testall
+make argv="--help-tests" testall
+make argv="-v TestAdd" testall
 make argv=TestTempl test
