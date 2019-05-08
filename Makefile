@@ -29,6 +29,34 @@ clean: \
 
 clean:
 	rmdir /s /q build
+	rmdir /s /q test\build
 
 run:
 	@.\build\$(NAME).exe
+
+#	Test
+t_file=$(wildcard ./test/*.h)
+t_src=$(patsubst ./test/%.h, ./test/build/%.cpp, $(t_file))
+t_exe=$(patsubst ./test/%.h, ./test/build/%.exe, $(t_file))
+t_build=./test/build
+
+cxxtestgen=.\test\cxxtest-4.3\bin\cxxtestgen
+cxxincl=./test/cxxtest-4.3/cxxtest
+
+CPP=g++
+
+$(t_build):
+	if not exist ".\test\build" mkdir .\test\build
+
+$(t_build)/%.cpp: ./test/%.h $(t_build)
+	$(cxxtestgen) --error-printer -o $@ $<
+
+$(t_build)/%.exe: $(t_build)/%.cpp
+	$(CPP) -o $@ -I$(cxxincl) $<
+
+# build test file
+buildt: $(t_exe)
+
+# %~fI expands %I to a fully qualified path name
+test: $(t_exe)
+	for /r ".\test\build" %%i in (*.exe) do %%~fi
