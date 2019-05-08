@@ -28,8 +28,8 @@ clean: \
 	find . -name "*.o*" -exec rm -f {} \;
 
 clean:
-	rmdir /s /q build
-	rmdir /s /q test\build
+	if exist "build" rmdir /s /q build
+	if exist "test\build" rmdir /s /q test\build
 
 run:
 	@.\build\$(NAME).exe
@@ -57,6 +57,9 @@ $(t_build)/%.exe: $(t_build)/%.cpp
 # build test file
 buildt: $(t_exe)
 
+test: ./test/build/$(argv).exe
+	.\test\build\$(argv).exe
+
 # %~fI expands %I to a fully qualified path name
-test: $(t_exe)
+testall: $(t_exe)
 	for /r ".\test\build" %%i in (*.exe) do %%~fi
