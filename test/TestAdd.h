@@ -15,3 +15,14 @@ public:
         TS_TRACE("Finishing multiplication test");
     }
 };
+
+#ifndef CXXTEST_RUNNING
+#include <iostream>
+
+int main(int argc, char *argv[])
+{
+
+    std::cout << "Non-CxxTest stuff is happening now." << std::endl;
+
+}
+#endif
